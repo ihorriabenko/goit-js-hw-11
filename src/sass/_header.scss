@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  justify-content: center;
+
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  background-color: blue;
+}
+
+.header {
+  &__input {
+    width: 350px;
+    height: 45px;
+  }
+
+  &__button {
+    height: 100%;
+  }
+}
+
+.container-btn {
+  display: flex;
+  justify-content: center;
+}
