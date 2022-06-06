@@ -1,19 +1,27 @@
+import axios from 'axios';
+
 export default class NewsApiService {
+  #BASE_URL = 'https://pixabay.com/api/';
+  #API_KEY = '27832642-aa50f7f08c8a181668a8915c7';
+
   constructor() {
     this.searchQuery = '';
     this.page = 1;
   }
 
   fetchArticles() {
-    // console.log(this);
-    const fetchParams = `?key=27832642-aa50f7f08c8a181668a8915c7&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`;
-
-    return fetch(`https://pixabay.com/api/${fetchParams}`)
-      .then(r => r.json())
-      .then(data => {
-        this.incrementPage();
-        return data.hits;
-      });
+    return axios
+      .get(`${this.#BASE_URL}`, {
+        params: {
+          key: this.#API_KEY,
+          q: this.searchQuery,
+          image_type: 'photo',
+          orientation: 'horizontal',
+          safesearch: true,
+          per_page: 40,
+          page: this.page,
+        },
+      })
   }
 
   incrementPage() {
