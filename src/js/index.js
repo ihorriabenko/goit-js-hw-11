@@ -1,8 +1,8 @@
 import Notiflix from 'notiflix';
 import NewsApiService from './news-service';
 import axios from 'axios';
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 // refs
 const refs = {
@@ -11,7 +11,9 @@ const refs = {
   btnLoadMore: document.querySelector('.load-more'),
 };
 
+// btn d:n
 refs.btnLoadMore.style.display = 'none';
+
 // variables
 const newsApiService = new NewsApiService();
 let lightbox = new SimpleLightbox('.gallery a', {
@@ -38,6 +40,9 @@ const onSumbit = async e => {
       lightbox.refresh();
       refs.btnLoadMore.style.display = 'none';
       refs.btnLoadMore.style.display = 'block';
+      const { height: cardHeight } = document
+      .querySelector('.container--gallery')
+      .firstElementChild.getBoundingClientRect();
     }
   } catch (err) {
     console.log(err);
@@ -73,16 +78,14 @@ const onSumbit = async e => {
 
 refs.form.addEventListener('submit', onSumbit);
 
-
 // load more
 const onClickLoadMore = async () => {
   try {
     const { data } = await newsApiService.fetchArticles();
 
     let totalPages = Math.ceil(data.totalHits / data.hits.length);
-    console.log(totalPages);
 
-    if(totalPages === newsApiService.page + 1) {
+    if (totalPages === newsApiService.page + 1) {
       Notiflix.Notify.info(
         "We're sorry, but you've reached the end of search results."
       );
@@ -92,15 +95,22 @@ const onClickLoadMore = async () => {
     }
 
     // if (newsApiService.page * data.hits <= data.totalHits) {
-      // Notiflix.Notify.info(
-      //   "We're sorry, but you've reached the end of search results."
-      // );
-      // refs.btnLoadMore.style.display = 'none';
+    // Notiflix.Notify.info(
+    //   "We're sorry, but you've reached the end of search results."
+    // );
+    // refs.btnLoadMore.style.display = 'none';
     // }
     else {
       makeMarkup(data.hits);
       lightbox.refresh();
       newsApiService.incrementPage();
+      const { height: cardHeight } = document
+      .querySelector('.container--gallery')
+      .firstElementChild.getBoundingClientRect();
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
     }
   } catch (err) {
     console.log(err);
