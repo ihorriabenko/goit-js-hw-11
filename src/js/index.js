@@ -71,7 +71,7 @@ refs.form.addEventListener('submit', onSumbit);
 // load more
 const onClickLoadMore = async () => {
   try {
-    const { data } = newsApiService.fetchArticles();
+    const { data } = await newsApiService.fetchArticles();
 
     if (newsApiService.page * data.hits <= data.totalHits) {
       Notiflix.Notify.info(
