@@ -7,6 +7,8 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 // refs
 const refs = {
   form: document.querySelector('.header__form'),
+  input: document.querySelector('.header__input'),
+  btnClose: document.querySelector('.header__button-close'),
   list: document.querySelector('.container--gallery'),
   btnLoadMore: document.querySelector('.load-more'),
 };
@@ -20,6 +22,27 @@ let lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
+// btn close
+refs.btnClose.style.display = 'none';
+
+refs.input.addEventListener('focus', () => {
+  setTimeout(() => {
+    refs.btnClose.style.display = 'block';
+  }, 100);
+});
+
+refs.btnClose.addEventListener('click', e => {
+  refs.input.value = '';
+  e.target.style.display = 'none';
+});
+
+refs.input.addEventListener('blur', () => {
+  setTimeout(() => {
+    refs.btnClose.style.display = 'none';
+  }, 100);
+});
+
+// submit
 const onSumbit = async e => {
   e.preventDefault();
   refs.list.innerHTML = '';
@@ -41,8 +64,8 @@ const onSumbit = async e => {
       refs.btnLoadMore.style.display = 'none';
       refs.btnLoadMore.style.display = 'block';
       const { height: cardHeight } = document
-      .querySelector('.container--gallery')
-      .firstElementChild.getBoundingClientRect();
+        .querySelector('.container--gallery')
+        .firstElementChild.getBoundingClientRect();
     }
   } catch (err) {
     console.log(err);
@@ -50,31 +73,6 @@ const onSumbit = async e => {
 
   newsApiService.incrementPage();
 };
-
-// const onSumbit = e => {
-//   e.preventDefault();
-//   refs.list.innerHTML = '';
-
-// newsApiService.query = e.currentTarget.elements.searchQuery.value;
-// newsApiService.resetPage();
-// newsApiService
-//   .fetchArticles()
-//   .then(({ data }) => {
-//     if (data.totalHits === 0) {
-//       Notiflix.Notify.failure(
-//         'Sorry, there are no images matching your search query. Please try again.'
-//       );
-//       refs.btnLoadMore.style.display = 'none';
-//     } else {
-//       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-//       makeMarkup(data.hits);
-//       refs.btnLoadMore.style.display = 'none';
-//       refs.btnLoadMore.style.display = 'block';
-//     }
-//   })
-//   .catch(err => console.log(err));
-// newsApiService.incrementPage();
-// };
 
 refs.form.addEventListener('submit', onSumbit);
 
@@ -92,21 +90,13 @@ const onClickLoadMore = async () => {
       refs.btnLoadMore.style.display = 'none';
       makeMarkup(data.hits);
       lightbox.refresh();
-    }
-
-    // if (newsApiService.page * data.hits <= data.totalHits) {
-    // Notiflix.Notify.info(
-    //   "We're sorry, but you've reached the end of search results."
-    // );
-    // refs.btnLoadMore.style.display = 'none';
-    // }
-    else {
+    } else {
       makeMarkup(data.hits);
       lightbox.refresh();
       newsApiService.incrementPage();
       const { height: cardHeight } = document
-      .querySelector('.container--gallery')
-      .firstElementChild.getBoundingClientRect();
+        .querySelector('.container--gallery')
+        .firstElementChild.getBoundingClientRect();
       window.scrollBy({
         top: cardHeight * 2,
         behavior: 'smooth',
@@ -116,23 +106,6 @@ const onClickLoadMore = async () => {
     console.log(err);
   }
 };
-
-// const onClickLoadMore = () => {
-//   newsApiService
-//     .fetchArticles()
-//     .then(({ data }) => {
-//       if (newsApiService.page * data.hits <= data.totalHits) {
-//         Notiflix.Notify.info(
-//           "We're sorry, but you've reached the end of search results."
-//         );
-//         refs.btnLoadMore.style.display = 'none';
-//       } else {
-//         makeMarkup(data.hits);
-//         newsApiService.incrementPage();
-//       }
-//     })
-//     .catch(err => console.log(err));
-// };
 
 refs.btnLoadMore.addEventListener('click', onClickLoadMore);
 
