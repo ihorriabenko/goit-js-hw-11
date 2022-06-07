@@ -90,6 +90,13 @@ const onClickLoadMore = async () => {
       refs.btnLoadMore.style.display = 'none';
       makeMarkup(data.hits);
       lightbox.refresh();
+      const { height: cardHeight } = document
+        .querySelector('.container--gallery')
+        .firstElementChild.getBoundingClientRect();
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
     } else {
       makeMarkup(data.hits);
       lightbox.refresh();
