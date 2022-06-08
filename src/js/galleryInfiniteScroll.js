@@ -50,14 +50,23 @@ const onSumbit = async e => {
 
   newsApiService.query = e.currentTarget.elements.searchQuery.value;
   newsApiService.resetPage();
+
   try {
     const { data } = await newsApiService.fetchArticles();
     console.log(data);
+    let totalPages = Math.ceil(data.totalHits / data.hits.length);
+
     if (data.totalHits === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-    } else {
+    } else if (newsApiService.page === totalPages) {
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+      makeMarkup(data.hits);
+      lightbox.refresh();
+      } else {
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
       makeMarkup(data.hits);
       lightbox.refresh();

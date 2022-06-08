@@ -52,11 +52,24 @@ const onSumbit = async e => {
   try {
     const { data } = await newsApiService.fetchArticles();
     console.log(data);
+
+    let totalPages = Math.ceil(data.totalHits / data.hits.length);
+    console.log(totalPages);
+    console.log(newsApiService.page);
+
+
     if (data.totalHits === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
       refs.btnLoadMore.style.display = 'none';
+    } else if (newsApiService.page === totalPages) {
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+      refs.btnLoadMore.style.display = 'none';
+      makeMarkup(data.hits);
+      lightbox.refresh();
     } else {
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
       makeMarkup(data.hits);
